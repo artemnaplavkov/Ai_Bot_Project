@@ -1,23 +1,16 @@
 import requests
 
-# Вставьте сюда ваш действующий ключ доступа к API weatherstack
-# Получить можно после бесплатной регистрации на https://weatherstack.com/
-API_KEY = "YOUR_API_KEY"  # Замените на реальный ключ
+API_KEY = "adf4cfb0273f49bee5663240951f9431"  
 BASE_URL = "http://api.weatherstack.com/current"
 
-def get_weather(city):
-    """
-    Запрашивает текущую погоду для города через API weatherstack.com.
-    Возвращает строку с температурой, описанием погоды и скоростью ветра.
-    В случае ошибки возвращает сообщение о проблеме.
-    """
+def get_weather(city, date=None):
     if not city:
         return "Укажите название города."
 
     params = {
         "access_key": API_KEY,
         "query": city,
-        "units": "m"  # 'm' для метрической системы (температура в °C, скорость ветра в км/ч)
+        "units": "m"
     }
 
     try:
@@ -40,8 +33,13 @@ def get_weather(city):
         weather_descriptions = current["weather_descriptions"][0] if current["weather_descriptions"] else "нет данных"
         wind_speed = current["wind_speed"]
 
-        return (f"Погода в {location_name}, {country}: {temperature}°C, "
-                f"{weather_descriptions}, ветер {wind_speed} км/ч")
+        base_response = (f"Погода в {location_name}, {country}: {temperature}°C, "
+                         f"{weather_descriptions}, ветер {wind_speed} км/ч")
+
+        if date:
+            return f"Прогноз на {date} пока не доступен. {base_response}"
+        else:
+            return base_response
 
     except requests.exceptions.Timeout:
         return "Сервер погоды не ответил вовремя. Попробуйте позже."
@@ -50,5 +48,4 @@ def get_weather(city):
     except requests.exceptions.RequestException as e:
         return f"Ошибка при запросе погоды: {e}"
     except (KeyError, ValueError) as e:
-
         return f"Не удалось обработать данные о погоде. Ошибка: {e}"
