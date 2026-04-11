@@ -1,10 +1,10 @@
+# database.py
 import sqlite3
 import datetime
 
 DB_NAME = "chatbot.db"
 
 def init_db():
-    """Создаёт таблицу logs, если её нет, и добавляет недостающие колонки intent и city."""
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
     cur.execute("""
