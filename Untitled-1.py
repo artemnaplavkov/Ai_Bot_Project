@@ -12,7 +12,29 @@ import unicodedata
 import soundfile as sf
 import pygame
 from num2words import num2words
-from voice import listen
+
+# Выбор режима ввода
+print("ЗАПУСК ЧАТ-БОТА")
+print("Выберите режим ввода:")
+print("1 - Голосовой ввод (микрофон)")
+print("2 - Текстовый ввод (клавиатура)")
+
+
+while True:
+    choice = input("Ваш выбор (1 или 2): ").strip()
+    if choice == "1":
+        USE_VOICE = True
+        from voice import listen
+        print("\nРежим: ГОЛОСОВОЙ ВВОД")
+        print("Зажмите Ctrl и говорите в микрофон\n")
+        break
+    elif choice == "2":
+        USE_VOICE = False
+        print("\nРежим: ТЕКСТОВЫЙ ВВОД")
+        print("Вводите сообщения с клавиатуры\n")
+        break
+    else:
+        print("Неверный выбор. Введите 1 или 2.")
 
 user_id = 1
 user_states = {}
@@ -373,12 +395,28 @@ def handle_message(user_id, text):
 if __name__ == "__main__":
     init_db()
     bot = ChatBot()
-    print("Бот запущен! Зажмите Ctrl и говорите в микрофон...")
+
+    welcome = "Здравствуйте! Я голосовой помощник. Чем могу помочь?"
+    print(f"Бот: {welcome}")
+    speak_async(welcome)
 
     while True:
-        user_input = listen()
-        if not user_input:
-            continue
+        if USE_VOICE:
+            user_input = listen()
+            if not user_input:
+                continue
+        else:
+            user_input = input("Вы: ").strip()
+            if not user_input:
+                continue
+
+        if user_input.lower() in ['пока', 'выход', 'до свидания', 'стоп', 'exit', 'quit']:
+            farewell = "До свидания! Хорошего дня!"
+            print(f"Бот: {farewell}")
+            speak_async(farewell)
+            log_message(user_input, farewell)
+            log_to_db(user_input, farewell)
+            break
 
         response = handle_message(user_id, user_input)
 
