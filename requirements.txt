@@ -1,2 +1,13 @@
-requests
+setuptools==70.0.0
+torch==2.6.0
+torchaudio==2.6.0
+tokenizers==0.20.3
+transformers==4.46.2
+fsspec==2024.12.0
+coqui-tts
+playsound==1.2.2
 spacy
+scikit-learn
+pandas
+numpy
+requests
